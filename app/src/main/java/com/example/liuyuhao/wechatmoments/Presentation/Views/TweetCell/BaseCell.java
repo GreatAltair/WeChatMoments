@@ -39,6 +39,7 @@ public class BaseCell extends LinearLayout implements Cell{
 
         comments = (ListView)myView.findViewById(R.id.lv_comments);
         comments.setLayoutParams(new LayoutParams(comments.getLayoutParams().width, 60 * model.getComments().size()));
+        if(model.getComments().size() == 0) ((LinearLayout)myView.findViewById(R.id.conments_area)).setBackgroundColor(Color.WHITE);
         comments.setDividerHeight(0);
         CommentsAdapter adapter = new CommentsAdapter(model.getComments());
         comments.setAdapter(adapter);

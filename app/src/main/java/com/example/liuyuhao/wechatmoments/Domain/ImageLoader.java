@@ -1,24 +1,29 @@
-package com.example.liuyuhao.wechatmoments.Data;
+package com.example.liuyuhao.wechatmoments.Domain;
 
 import android.graphics.drawable.Drawable;
 import android.util.LruCache;
 
-import java.io.ByteArrayOutputStream;
+import com.example.liuyuhao.wechatmoments.Data.Callback;
+import com.example.liuyuhao.wechatmoments.Data.ImageStorage;
+
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ImageLoader {
-    LruCache<String, Drawable> cache;
-    public ImageLoader(){
-        cache = new LruCache<>((int)(Runtime.getRuntime().maxMemory())/8);
+    private ImageStorage storage;
+    private static ImageLoader loader;
+    public static ImageLoader getInstance(){
+        if(loader == null) loader = new ImageLoader();
+        return loader;
     }
+    private ImageLoader(){
+        if(storage == null) storage = ImageStorage.getInstance();
+    }
+
     public void getImage(final String urlStr, final Callback<Drawable> callback){
-        Drawable d = cache.get(urlStr);
+        Drawable d = storage.get(urlStr);
         if (d!= null) {
             callback.onSuccess(d);
         }else {
@@ -26,7 +31,7 @@ public class ImageLoader {
                 @Override
                 public void run() {
                     downloadImage(urlStr);
-                    callback.onSuccess(cache.get(urlStr));
+                    callback.onSuccess(storage.get(urlStr));
                 }
             });
             t.start();
@@ -39,7 +44,7 @@ public class ImageLoader {
             DataInputStream dataInputStream = null;
             dataInputStream = new DataInputStream(url.openStream());
             Drawable d = Drawable.createFromStream(dataInputStream,"image.jpg");
-            cache.put(urlStr, d);
+            if(storage.get(urlStr)==null) storage.put(urlStr, d);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

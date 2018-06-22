@@ -6,39 +6,24 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.liuyuhao.wechatmoments.Data.Callback;
-import com.example.liuyuhao.wechatmoments.Data.ImageLoader;
-import com.example.liuyuhao.wechatmoments.Data.model.BaseTweetModel;
+import com.example.liuyuhao.wechatmoments.Domain.ImageLoader;
 import com.example.liuyuhao.wechatmoments.Data.model.ImgListTweetModel;
 import com.example.liuyuhao.wechatmoments.R;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ImgListCell extends BaseCell implements Cell{
     public static final int COLUMS = 3;
@@ -46,7 +31,7 @@ public class ImgListCell extends BaseCell implements Cell{
     private static final int NETWORK_ERROR = 9999;
     private int columsCount = 0;
 
-    private ImageLoader loader = new ImageLoader();
+    private ImageLoader loader = ImageLoader.getInstance();
 
     private Handler handler = new Handler(){
         @Override
@@ -80,7 +65,8 @@ public class ImgListCell extends BaseCell implements Cell{
             data.add(map);
         }
         MyAdapter adapter = new MyAdapter(getContext(), data, R.layout.image_grid_item, new String[] {},new int[] {});
-        gridView.setAdapter(adapter);
+//        gridView.setAdapter(adapter);
+        gridView.setAdapter(new ImageAdapter(getContext(), model.getImgUrls()));
         expandArea.addView(gridView);
     }
 
@@ -120,13 +106,16 @@ public class ImgListCell extends BaseCell implements Cell{
                 vh = new ViewHolder();
                 vh.img = (ImageView)view.findViewById(R.id.image_grid_img);
                 view.setTag(vh);
-            }else {
-                vh = (ViewHolder) view.getTag();
+
             }
+
+            vh = (ViewHolder) view.getTag();
+
             LayoutParams params = new LayoutParams(GRIDVIEW_WIDTH / columsCount - 10, GRIDVIEW_WIDTH/columsCount - 10);
             vh.img.setLayoutParams(params);
             vh.img.setBackgroundColor(Color.parseColor("#dddddd"));
             loadImage(vh.img, urls.get(i));
+
             return view;
         }
         class ViewHolder {
@@ -152,6 +141,7 @@ public class ImgListCell extends BaseCell implements Cell{
 
                 img.setTag(1);
                 loadImage(img, data.get(position).get("image"));
+//                img.setImageResource(R.drawable.test);
             }
             return v;
         }

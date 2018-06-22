@@ -1,23 +1,17 @@
-package com.example.liuyuhao.wechatmoments.Domain;
+package com.example.liuyuhao.wechatmoments;
 
 import com.example.liuyuhao.wechatmoments.Data.model.BaseModel;
-import com.example.liuyuhao.wechatmoments.Data.model.BaseTweetModel;
 import com.example.liuyuhao.wechatmoments.Data.model.Comment;
 import com.example.liuyuhao.wechatmoments.Data.model.ImgListTweetModel;
 import com.example.liuyuhao.wechatmoments.Data.model.TopModel;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class TweetDataHelper {
-    LinkedList<BaseModel> tweets;
-//    String[] uris = {"http://www.gamersky.com/showimage/id_gamersky.shtml?http://img1.gamersky.com/image2018/06/20180621_ls_141_2/gamersky_026origin_051_2018621181319E.jpg",
-//    "http://www.gamersky.com/showimage/id_gamersky.shtml?http://img1.gamersky.com/image2018/06/20180621_ls_141_2/gamersky_136origin_271_20186211813DFB.jpg",
-//    "http://www.gamersky.com/showimage/id_gamersky.shtml?http://img1.gamersky.com/image2018/06/20180621_ls_141_2/gamersky_040origin_079_201862118136CA.jpg",
-//    "http://www.gamersky.com/showimage/id_gamersky.shtml?http://img1.gamersky.com/image2018/06/20180621_ls_141_2/gamersky_148origin_295_2018621181325B.jpg"};
-    String[] uris = {"https://upload-images.jianshu.io/upload_images/1019822-b2acfd9ed6182541.png","http://mmbiz.qpic.cn/mmbiz/PwIlO51l7wuFyoFwAXfqPNETWCibjNACIt6ydN7vw8LeIwT7IjyG3eeribmK4rhibecvNKiaT2qeJRIWXLuKYPiaqtQ/0"};
-    String[] uris1 = {
+public class DataTest {
+    String[] uris = {
             "http://img.my.csdn.net/uploads/201508/05/1438760758_3497.jpg",
             "http://img.my.csdn.net/uploads/201508/05/1438760758_6667.jpg",
             "http://img.my.csdn.net/uploads/201508/05/1438760757_3588.jpg",
@@ -72,31 +66,41 @@ public class TweetDataHelper {
             "http://img.my.csdn.net/uploads/201508/05/1438760446_3641.jpg",
             "http://img.my.csdn.net/uploads/201508/05/1438760445_3283.jpg"
     };
-    public LinkedList<BaseModel> getTweets() {
-        tweets = new LinkedList<>();
+
+    String[] froms = {"张三","李文礼","秦宁","唐波","田甜","付荣亮","武星宇","陈天城","王伟","张浩洋"};
+    String[] tos = {"田甜","付荣亮","","陈天城","王伟","张浩洋","张三","李文礼","秦宁","唐波"};
+    String[] bodys = {"我同意","哈哈哈哈哈嗝","666","测试数据","也是测试数据","这还是测试数据"};
+    public LinkedList<BaseModel> getJson(){
+        LinkedList<BaseModel> tweets = new LinkedList<>();
+        //必须在第一项放置topCell
         TopModel top = new TopModel();
         tweets.add(top);
-        for(int i = 0; i < 10; i++){
-            LinkedList<String> likeList = new LinkedList<>();
-            likeList.add("田甜");
 
+        Gson gson = new Gson();
+        Random r = new Random();
+        for (int i = 0; i < 10; i++){
+            LinkedList<String> likeList = new LinkedList<>();
+            int likeCount = r.nextInt(10);
+            for (int j = 0; j < likeCount; j++){
+                likeList.add(froms[j]);
+            }
+
+            int commentCount = r.nextInt(5);
             LinkedList<Comment> comments = new LinkedList<>();
-            Comment comment = new Comment("田甜","","我同意");
-            Comment comment2 = new Comment("刘宇豪","田甜","我也同意");
-            comments.add(comment);
-            comments.add(comment2);
+            for(int j = 0; j < commentCount; j++){
+                Comment comment = new Comment(froms[r.nextInt(10)],tos[r.nextInt(10)],bodys[r.nextInt(6)]);
+                comments.add(comment);
+            }
 
             ArrayList<String> urls = new ArrayList<>();
-            Random r = new Random();
             int k = r.nextInt(9);
             for(int j = 0; j < k+1; j++){
-//                urls.add(uris[r.nextInt(15)]);
-                urls.add(uris[0]);
+                urls.add(uris[r.nextInt(9)+1]);
             }
-            ImgListTweetModel model = new ImgListTweetModel("刘宇豪", "","田甜是个小可爱",likeList,comments,urls);
-            if((model.getContent() == null || model.getContent() == "")&&(model.getImgUrls().size()==0)) continue;
+            ImgListTweetModel model = new ImgListTweetModel(froms[r.nextInt(10)], "","HelloWorld",likeList,comments,urls);
             tweets.add(model);
         }
+
         return tweets;
     }
 }

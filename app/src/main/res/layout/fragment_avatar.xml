@@ -8,6 +8,6 @@
     <ImageView
         android:id="@+id/img_image"
         android:layout_width="match_parent"
-        android:background="#333333"
+        android:background="@color/top_gray"
         android:layout_height="wrap_content" />
 </FrameLayout>
